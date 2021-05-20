@@ -1,10 +1,9 @@
-package partial_test
+package partial
 
 import (
 	"reflect"
 	"testing"
 
-	"github.com/lewisreay/partial"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +18,7 @@ type sithLord struct {
 }
 
 func TestFieldHasTag(t *testing.T) {
-	ok, tag := partial.FieldHasTag("darkSide", testTag, reflect.TypeOf(sithLord{
+	ok, tag := fieldHasTag("darkSide", testTag, reflect.TypeOf(sithLord{
 		name:     "Count Dooku",
 		age:      83,
 		darkSide: true,
@@ -29,7 +28,7 @@ func TestFieldHasTag(t *testing.T) {
 }
 
 func TestGetFieldsWithTag(t *testing.T) {
-	fields, err := partial.GetFieldsWithTag(testTag, reflect.TypeOf(sithLord{
+	fields, err := getFieldsWithTag(testTag, reflect.TypeOf(sithLord{
 		name:     "Asajj Ventress",
 		age:      32,
 		darkSide: true,
@@ -39,7 +38,7 @@ func TestGetFieldsWithTag(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
-	_, err := partial.Get([]string{"bad"}, testTag)
+	_, err := Get([]string{"bad"}, testTag)
 	assert.Error(t, err, "should error")
 
 	sith := sithLord{
@@ -47,7 +46,7 @@ func TestGet(t *testing.T) {
 		age:      32,
 		darkSide: true,
 	}
-	vals, err := partial.Get(sith, testTag)
+	vals, err := Get(sith, testTag)
 	assert.NoError(t, err, "should not error")
 
 	for k, v := range vals {
