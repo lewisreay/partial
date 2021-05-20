@@ -39,11 +39,11 @@ func getFieldsWithTag(tag string, t reflect.Type) ([]structField, error) {
 	for i := 0; i < amt; i++ {
 		field := t.Field(i)
 		// Only add fields where the requested tag is present.
-		found, tagValue := fieldHasTag(field.Name, tag, t)
+		found, v := fieldHasTag(field.Name, tag, t)
 		if found {
 			fields = append(fields, structField{
 				name: field.Name,
-				tag:  tagValue,
+				tag:  v,
 			})
 		}
 	}
@@ -127,11 +127,11 @@ func Get(i interface{}, tag string) (map[string]interface{}, error) {
 				return nil, fmt.Errorf("%v does not implement the Partials interface", v.Type().Name())
 			}
 			// Run the interface implementation and set the value.
-			value, err := p.Value(v.Interface())
+			iv, err := p.Value(v.Interface())
 			if err != nil {
 				return nil, err
 			}
-			values[field.tag] = value
+			values[field.tag] = iv
 		}
 	}
 
