@@ -50,7 +50,7 @@ func getFieldsWithTag(tag string, t reflect.Type) ([]structField, error) {
 	return fields, nil
 }
 
-// Get will return all of the fields with a zero struct.
+// Get will return all of the fields with the tag and that don't have a zero value.
 func Get(i interface{}, tag string) (map[string]interface{}, error) {
 	if reflect.ValueOf(i).Kind() != reflect.Struct {
 		return nil, fmt.Errorf("expected type struct got %T", i)
