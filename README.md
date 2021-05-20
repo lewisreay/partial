@@ -1,9 +1,9 @@
 # Partial
 
-Partial allows you to determine which fields in a struct do not have a zero value field, by tag. This project was inspired by an issue I was having with partial DB updates.
+This package allows you to determine which fields in a struct do not have a zero value, by tag.
+
+The initial use case was for determining which fields need updating from a PATH request, but the use case could extend much further.
 
 Go's basic types are covered automatically. Custom types require implementing the Partials interface.
 
-TODO:
-
-Add tests
+`example.go` displays an example of how to this package.
