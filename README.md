@@ -6,4 +6,4 @@ The initial use case was for determining which fields need updating from a PATCH
 
 Go's basic types are covered automatically. Custom types require implementing the Partials interface.
 
-`example.go` displays an example of how to this package.
+`example.go` displays an example of how to use this package.
