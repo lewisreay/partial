@@ -29,12 +29,12 @@ func (de defeatedEnemies) Value(i interface{}) (interface{}, error) {
 }
 
 // Implement the Partials interface
-func (de padawans) Value(i interface{}) (interface{}, error) {
-	de, ok := i.(padawans)
+func (p padawans) Value(i interface{}) (interface{}, error) {
+	p, ok := i.(padawans)
 	if !ok {
 		return nil, fmt.Errorf("got %T expected padawans", i)
 	}
-	return de, nil
+	return p, nil
 }
 
 func main() {

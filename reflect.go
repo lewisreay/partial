@@ -18,16 +18,16 @@ type Partials interface {
 }
 
 // fieldHasTag will check if a field has the tag.
-func fieldHasTag(name, tag string, t reflect.Type) (bool, string) {
+func fieldHasTag(name, tag string, t reflect.Type) (string, bool) {
 	field, found := t.FieldByName(name)
 	if !found {
-		return false, ""
+		return "", false
 	}
 	v, found := field.Tag.Lookup(tag)
 	if !found {
-		return false, ""
+		return "", false
 	}
-	return true, v
+	return v, true
 }
 
 // getFieldsWithTag will get all the fields from a struct where the tag is present.
@@ -39,7 +39,7 @@ func getFieldsWithTag(tag string, t reflect.Type) ([]structField, error) {
 	for i := 0; i < amt; i++ {
 		field := t.Field(i)
 		// Only add fields where the requested tag is present.
-		found, v := fieldHasTag(field.Name, tag, t)
+		v, found := fieldHasTag(field.Name, tag, t)
 		if found {
 			fields = append(fields, structField{
 				name: field.Name,
@@ -87,33 +87,13 @@ func Get(i interface{}, tag string) (map[string]interface{}, error) {
 		switch v.Kind() {
 		case reflect.Bool:
 			values[field.tag] = v.Bool()
-		case reflect.Int:
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 			values[field.tag] = v.Int()
-		case reflect.Int8:
-			values[field.tag] = v.Int()
-		case reflect.Int16:
-			values[field.tag] = v.Int()
-		case reflect.Int32:
-			values[field.tag] = v.Int()
-		case reflect.Int64:
-			values[field.tag] = v.Int()
-		case reflect.Uint:
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			values[field.tag] = v.Uint()
-		case reflect.Uint8:
-			values[field.tag] = v.Uint()
-		case reflect.Uint16:
-			values[field.tag] = v.Uint()
-		case reflect.Uint32:
-			values[field.tag] = v.Uint()
-		case reflect.Uint64:
-			values[field.tag] = v.Uint()
-		case reflect.Float32:
+		case reflect.Float32, reflect.Float64:
 			values[field.tag] = v.Float()
-		case reflect.Float64:
-			values[field.tag] = v.Float()
-		case reflect.Complex64:
-			values[field.tag] = v.Complex()
-		case reflect.Complex128:
+		case reflect.Complex64, reflect.Complex128:
 			values[field.tag] = v.Complex()
 		case reflect.String:
 			values[field.tag] = v.String()

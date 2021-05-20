@@ -18,7 +18,7 @@ type sithLord struct {
 }
 
 func TestFieldHasTag(t *testing.T) {
-	ok, tag := fieldHasTag("darkSide", testTag, reflect.TypeOf(sithLord{
+	tag, ok := fieldHasTag("darkSide", testTag, reflect.TypeOf(sithLord{
 		name:     "Count Dooku",
 		age:      83,
 		darkSide: true,
