@@ -81,7 +81,7 @@ func Get(i interface{}, tag string) (map[string]interface{}, error) {
 
 		// We don't want fields that don't have a value.
 		if v.IsZero() {
-			break
+			continue
 		}
 
 		switch v.Kind() {
