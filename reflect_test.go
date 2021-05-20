@@ -12,10 +12,13 @@ const (
 )
 
 type sithLord struct {
-	name     string `testingTag:"name"`
-	age      int    `testingTag:"age"`
-	darkSide bool   `testingTag:"dark_side"`
+	name        string      `testingTag:"name"`
+	age         int         `testingTag:"age"`
+	darkSide    bool        `testingTag:"dark_side"`
+	Apprentices apprentices `testingTag:"apprentices"`
 }
+
+type apprentices []string
 
 func TestFieldHasTag(t *testing.T) {
 	tag, ok := fieldHasTag("darkSide", testTag, reflect.TypeOf(sithLord{
@@ -59,4 +62,8 @@ func TestGet(t *testing.T) {
 			assert.EqualValues(t, sith.darkSide, v, "should match")
 		}
 	}
+
+	sith.Apprentices = []string{"Asajj Ventress"}
+	vals, err = Get(sith, testTag)
+	assert.Error(t, err, "should not error")
 }
