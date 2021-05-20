@@ -1,6 +1,7 @@
 package partial
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -12,13 +13,24 @@ const (
 )
 
 type sithLord struct {
-	name        string      `testingTag:"name"`
-	age         int         `testingTag:"age"`
-	darkSide    bool        `testingTag:"dark_side"`
-	Apprentices apprentices `testingTag:"apprentices"`
+	name         string       `testingTag:"name"`
+	age          int          `testingTag:"age"`
+	darkSide     bool         `testingTag:"dark_side"`
+	Apprentices  apprentices  `testingTag:"apprentices"`
+	DefeatedJedi defeatedJedi `testingTag:"defeated_jedi"`
 }
 
 type apprentices []string
+
+type defeatedJedi []string
+
+func (dj defeatedJedi) Value(i interface{}) (interface{}, error) {
+	dj, ok := i.(defeatedJedi)
+	if !ok {
+		return nil, fmt.Errorf("got %T expected defeatedJedi", i)
+	}
+	return dj, nil
+}
 
 func TestFieldHasTag(t *testing.T) {
 	tag, ok := fieldHasTag("darkSide", testTag, reflect.TypeOf(sithLord{
@@ -32,12 +44,14 @@ func TestFieldHasTag(t *testing.T) {
 
 func TestGetFieldsWithTag(t *testing.T) {
 	fields, err := getFieldsWithTag(testTag, reflect.TypeOf(sithLord{
-		name:     "Asajj Ventress",
-		age:      32,
-		darkSide: true,
+		name:         "Asajj Ventress",
+		age:          32,
+		darkSide:     true,
+		Apprentices:  []string{"Savage Opress"},
+		DefeatedJedi: []string{"None!"},
 	}))
 	assert.NoError(t, err, "should not error")
-	assert.Len(t, fields, 3, "should have 3 fields")
+	assert.Len(t, fields, 5, "should have 5 fields")
 }
 
 func TestGet(t *testing.T) {
@@ -63,7 +77,11 @@ func TestGet(t *testing.T) {
 		}
 	}
 
+	sith.DefeatedJedi = []string{"Sifo Dyas"}
+	vals, err = Get(sith, testTag)
+	assert.NoError(t, err, "should not error")
+
 	sith.Apprentices = []string{"Asajj Ventress"}
 	vals, err = Get(sith, testTag)
-	assert.Error(t, err, "should not error")
+	assert.Error(t, err, "should error")
 }
