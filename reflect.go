@@ -17,8 +17,8 @@ type Partials interface {
 	Value(i interface{}) (interface{}, error)
 }
 
-// fieldHasTag will check if a field has the tag.
-func fieldHasTag(name, tag string, t reflect.Type) (bool, string) {
+// FieldHasTag will check if a field has the tag.
+func FieldHasTag(name, tag string, t reflect.Type) (bool, string) {
 	field, found := t.FieldByName(name)
 	if !found {
 		return false, ""
@@ -30,8 +30,8 @@ func fieldHasTag(name, tag string, t reflect.Type) (bool, string) {
 	return true, v
 }
 
-// getFieldsWithTag will get all the fields from a struct where the tag is present.
-func getFieldsWithTag(tag string, t reflect.Type) ([]structField, error) {
+// GetFieldsWithTag will get all the fields from a struct where the tag is present.
+func GetFieldsWithTag(tag string, t reflect.Type) ([]structField, error) {
 	amt := t.NumField()
 	// We don't know how many fields have the requested tag. Size must be zero.
 	fields := make([]structField, 0)
@@ -39,7 +39,7 @@ func getFieldsWithTag(tag string, t reflect.Type) ([]structField, error) {
 	for i := 0; i < amt; i++ {
 		field := t.Field(i)
 		// Only add fields where the requested tag is present.
-		found, v := fieldHasTag(field.Name, tag, t)
+		found, v := FieldHasTag(field.Name, tag, t)
 		if found {
 			fields = append(fields, structField{
 				name: field.Name,
@@ -50,6 +50,7 @@ func getFieldsWithTag(tag string, t reflect.Type) ([]structField, error) {
 	return fields, nil
 }
 
+// Get will return all of the fields with a zero struct.
 func Get(i interface{}, tag string) (map[string]interface{}, error) {
 	if reflect.ValueOf(i).Kind() != reflect.Struct {
 		return nil, fmt.Errorf("expected type struct got %T", i)
@@ -61,7 +62,7 @@ func Get(i interface{}, tag string) (map[string]interface{}, error) {
 	}
 
 	// Get all fields with the matching tag.
-	fields, err := getFieldsWithTag(tag, t)
+	fields, err := GetFieldsWithTag(tag, t)
 	if err != nil {
 		return nil, err
 	}
