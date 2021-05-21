@@ -20,15 +20,6 @@ type Partials interface {
 	Value(i interface{}) (interface{}, error)
 }
 
-// fieldHasTag will check if a field has the tag.
-func fieldHasTag(tag string, field reflect.StructField) (string, bool) {
-	v, found := field.Tag.Lookup(tag)
-	if !found {
-		return "", false
-	}
-	return v, true
-}
-
 // getFieldsWithTag will get all the fields from a struct where the tag is present.
 func getFieldsWithTag(tag string, t reflect.Type) ([]structField, error) {
 	amt := t.NumField()
@@ -38,7 +29,7 @@ func getFieldsWithTag(tag string, t reflect.Type) ([]structField, error) {
 	for i := 0; i < amt; i++ {
 		field := t.Field(i)
 		// Only add fields where the requested tag is present.
-		v, found := fieldHasTag(tag, field)
+		v, found := field.Tag.Lookup(tag)
 		if found {
 			fields = append(fields, structField{
 				name:  field.Name,
