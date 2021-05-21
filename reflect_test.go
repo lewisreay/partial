@@ -40,7 +40,7 @@ func TestFieldHasTag(t *testing.T) {
 	})
 	field, ok := r.FieldByName("darkSide")
 	assert.True(t, ok, "should not be false")
-	tag, ok := fieldHasTag(testTag, field)
+	tag, ok := field.Tag.Lookup(testTag)
 	assert.True(t, ok, "should not be false")
 	assert.Equal(t, "dark_side", tag, "tag value should match")
 }
