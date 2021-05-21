@@ -33,11 +33,14 @@ func (dj defeatedJedi) Value(i interface{}) (interface{}, error) {
 }
 
 func TestFieldHasTag(t *testing.T) {
-	tag, ok := fieldHasTag("darkSide", testTag, reflect.TypeOf(sithLord{
+	r := reflect.TypeOf(sithLord{
 		name:     "Count Dooku",
 		age:      83,
 		darkSide: true,
-	}))
+	})
+	field, ok := r.FieldByName("darkSide")
+	assert.True(t, ok, "should not be false")
+	tag, ok := fieldHasTag(testTag, field)
 	assert.True(t, ok, "should not be false")
 	assert.Equal(t, "dark_side", tag, "tag value should match")
 }

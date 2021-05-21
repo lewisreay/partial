@@ -8,21 +8,20 @@ import (
 
 // structField defines the structure of a struct field. name = field name, tag = tag value
 type structField struct {
-	name string
-	tag  string
+	name  string
+	tag   string
+	index int
 }
 
 // Partials interface allows for custom types.
+// If the value type isn't of Go's basic types, implementing the Partials interface is required otherwise an error will be returned.
 type Partials interface {
+	// Parameter is the reflect.Value as an interface and the returning arg is the value, asserted based on the interface implementation.
 	Value(i interface{}) (interface{}, error)
 }
 
 // fieldHasTag will check if a field has the tag.
-func fieldHasTag(name, tag string, t reflect.Type) (string, bool) {
-	field, found := t.FieldByName(name)
-	if !found {
-		return "", false
-	}
+func fieldHasTag(tag string, field reflect.StructField) (string, bool) {
 	v, found := field.Tag.Lookup(tag)
 	if !found {
 		return "", false
@@ -39,11 +38,12 @@ func getFieldsWithTag(tag string, t reflect.Type) ([]structField, error) {
 	for i := 0; i < amt; i++ {
 		field := t.Field(i)
 		// Only add fields where the requested tag is present.
-		v, found := fieldHasTag(field.Name, tag, t)
+		v, found := fieldHasTag(tag, field)
 		if found {
 			fields = append(fields, structField{
-				name: field.Name,
-				tag:  v,
+				name:  field.Name,
+				tag:   v,
+				index: i,
 			})
 		}
 	}
@@ -77,7 +77,7 @@ func Get(i interface{}, tag string) (map[string]interface{}, error) {
 			return nil, errors.New("cannot have duplicate key")
 		}
 
-		v := reflect.ValueOf(i).FieldByName(field.name)
+		v := reflect.ValueOf(i).Field(field.index)
 
 		// We don't want fields that don't have a value.
 		if v.IsZero() {
